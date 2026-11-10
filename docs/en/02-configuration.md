@@ -2,8 +2,8 @@
 
 *[Polski → ../pl/02-konfiguracja.md](../pl/02-konfiguracja.md)*
 
-Everything is set in **Settings → MCP Agent**. The panel has four tabs. You need the first three; the fourth
-(GitHub) is optional.
+Everything is set in **Settings → MCP Agent**. The panel has five tabs. You need the first three; the last two
+(Images and GitHub) are optional.
 
 ## Start tab
 
@@ -70,6 +70,20 @@ tool also requires the agent to give a `reason`, which is stored with the post (
 [chapter 7](07-how-it-works.md)).
 
 The full list with descriptions is in [chapter 4](04-tools.md).
+
+## Images tab (optional)
+
+Sets the largest image the agent may send itself as base64 data (`data_base64` in `colorbox-import-image`), for
+example an attachment from the conversation. The default is **4 MB**.
+
+- Base64 data is about a third larger than the file and travels inside the request, so the panel lets you choose
+  at most about 70% of PHP's `post_max_size` (and never more than 30 MB). The tab shows both numbers.
+- A reverse proxy in front of the site (nginx, Cloudflare) can have its own request size limit, which the plugin
+  cannot see. If larger images fail with `413`, raise it there.
+- After saving, use **Sync tools** in Perplexity: the limit is written in the tool description, and the client
+  reads it from there.
+
+Images from GitHub or a web address are not affected; they are downloaded by the server, up to 30 MB.
 
 ## GitHub tab (optional)
 

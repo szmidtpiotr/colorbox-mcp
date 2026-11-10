@@ -55,6 +55,7 @@ Jeśli w zapisie nie ma `authorization`, a klient go wysyła, to serwer go wycin
 | Agent nie może poprawić opublikowanego wpisu | `colorbox-update-post` działa tylko na szkicach i wpisach oczekujących. Włącz ⚠ `colorbox-update-published-post`, jeśli tego chcesz. |
 | Prywatne repozytorium GitHub nie działa | Brak tokenu GitHub, token nie obejmuje tego repozytorium albo nie ma **Contents: Read-only**. Sprawdź zakładkę **GitHub**. |
 | GitHub przestaje działać po kilkudziesięciu obrazkach | Limit 60 zapytań na godzinę bez tokenu. Dodaj token GitHub (limit 5000 na godzinę). |
+| **Dane base64 są ograniczone do N MB** | Obrazek jest większy niż limit w zakładce **Obrazki**. Podnieś limit tam albo niech agent zaimportuje plik z GitHuba lub z adresu. |
 | Import obrazka z adresu jest odrzucany | Adres jest lokalny albo prywatny (odrzucany celowo), nie jest `https` albo plik nie jest JPEG/PNG/WebP/GIF. |
 | Bloki kodu nie są kolorowe | Wtyczka nie koloruje kodu. Dodaj skrypt kolorujący do motywu (rozdział 4). |
 | `<script>` albo osadzenie od agenta zniknęło | Tak ma być: konto agenta nie ma `unfiltered_html`. Takie rzeczy dodaj sam. |

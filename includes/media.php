@@ -14,9 +14,10 @@ use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
 
-const MAX_BYTES        = 30 * 1024 * 1024; // limit wgrywania na serwerze: 32 MB.
-const MAX_BASE64_BYTES = 4 * 1024 * 1024; // post_max_size na serwerze to 8 MB, a base64 dokłada ~33%.
-const OPTION_GH_TOKEN  = 'colorbox_mcp_github_token';
+const MAX_BYTES         = 30 * 1024 * 1024;
+const DEFAULT_BASE64_MB = 4;
+const OPTION_BASE64_MB  = 'colorbox_mcp_base64_mb';
+const OPTION_GH_TOKEN   = 'colorbox_mcp_github_token';
 
 const META_SHA         = '_colorbox_sha256';
 const META_SOURCE      = '_colorbox_source';
@@ -225,6 +226,22 @@ function fetch_from_url( string $url ) {
 }
 
 /**
+ * Największy limit base64 (MB), jaki zniesie ten serwer. Base64 jest o ~33% większe od pliku i przychodzi
+ * w treści zapytania, więc musi się zmieścić w post_max_size (z zapasem na resztę JSON-a).
+ */
+function base64_server_max_mb(): int {
+	$post = wp_convert_hr_to_bytes( (string) ini_get( 'post_max_size' ) );
+	$max  = $post > 0 ? (int) floor( $post * 0.7 / MB_IN_BYTES ) : PHP_INT_MAX;
+	return max( 1, min( (int) ( MAX_BYTES / MB_IN_BYTES ), $max ) );
+}
+
+/** Limit base64 (MB) ustawiony w panelu, przycięty do możliwości serwera. */
+function base64_limit_mb(): int {
+	$mb = (int) get_option( OPTION_BASE64_MB, DEFAULT_BASE64_MB );
+	return max( 1, min( base64_server_max_mb(), $mb ) );
+}
+
+/**
  * @return array{bytes:string,name:string,source:string}|WP_Error
  */
 function from_base64( string $data, string $filename ) {
@@ -235,8 +252,10 @@ function from_base64( string $data, string $filename ) {
 	if ( false === $bytes ) {
 		return new WP_Error( 'colorbox_bad_base64', __( 'Invalid base64 data.', 'colorbox-wp-mcp' ) );
 	}
-	if ( strlen( $bytes ) > MAX_BASE64_BYTES ) {
-		return new WP_Error( 'colorbox_too_big', __( 'base64 data is limited to 4 MB. Import larger files from GitHub or from a URL.', 'colorbox-wp-mcp' ) );
+	$limit = base64_limit_mb();
+	if ( strlen( $bytes ) > $limit * MB_IN_BYTES ) {
+		/* translators: %d: size limit in MB */
+		return new WP_Error( 'colorbox_too_big', sprintf( __( 'base64 data is limited to %d MB. Import larger files from GitHub or from a URL.', 'colorbox-wp-mcp' ), $limit ) );
 	}
 	return array(
 		'bytes'  => $bytes,

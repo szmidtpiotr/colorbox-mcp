@@ -48,6 +48,7 @@ For the curious and for anyone who wants to change the code.
 | Option | `colorbox_mcp_tokens` | Token fingerprints, account, name, dates. |
 | Option | `colorbox_mcp_disabled_tools` | Tools switched off in the panel. Missing = the defaults. |
 | Option | `colorbox_mcp_github_token` | The encrypted GitHub token. |
+| Option | `colorbox_mcp_base64_mb` | The base64 image limit in MB. Missing = 4. |
 | Options | `colorbox_mcp_c_…` | Rate-limit counters (short-lived). |
 | Post meta | `_colorbox_seo_description`, `_colorbox_social_image` | SEO fields. |
 | Post meta | `_colorbox_review_note` | The agent's note for review. |

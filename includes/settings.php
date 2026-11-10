@@ -30,7 +30,7 @@ const DEFAULT_DISABLED = array(
 function boot(): void {
 	add_action( 'admin_menu', __NAMESPACE__ . '\\menu' );
 	add_filter( 'plugin_action_links_' . plugin_basename( \Colorbox\WpMcp\FILE ), __NAMESPACE__ . '\\action_links' );
-	foreach ( array( 'create_agent', 'create_token', 'revoke_token', 'save_tools', 'save_integrations', 'delete_github' ) as $action ) {
+	foreach ( array( 'create_agent', 'create_token', 'revoke_token', 'save_tools', 'save_integrations', 'delete_github', 'save_images' ) as $action ) {
 		add_action( 'admin_post_colorbox_mcp_' . $action, __NAMESPACE__ . '\\handle_' . $action );
 	}
 }
@@ -163,6 +163,14 @@ function handle_save_integrations(): void {
 	back( 'integrations', __( 'Saved.', 'colorbox-wp-mcp' ) );
 }
 
+function handle_save_images(): void {
+	guard( 'save_images' );
+	$mb  = (int) ( $_POST['base64_mb'] ?? Media\DEFAULT_BASE64_MB );
+	$max = Media\base64_server_max_mb();
+	update_option( Media\OPTION_BASE64_MB, max( 1, min( $max, $mb ) ), false );
+	back( 'images', __( 'Saved. Sync the tools in your client (e.g. Perplexity) so it sees the new limit.', 'colorbox-wp-mcp' ) );
+}
+
 function handle_delete_github(): void {
 	guard( 'delete_github' );
 	Media\delete_github_token();
@@ -181,6 +189,7 @@ function tabs(): array {
 		'start'        => __( 'Start', 'colorbox-wp-mcp' ),
 		'access'       => __( 'Agent account and tokens', 'colorbox-wp-mcp' ),
 		'tools'        => __( 'Tools', 'colorbox-wp-mcp' ),
+		'images'       => __( 'Images', 'colorbox-wp-mcp' ),
 		'integrations' => 'GitHub',
 	);
 }
@@ -457,4 +466,39 @@ function render_integrations(): void {
 		submit_button( __( 'Delete GitHub token', 'colorbox-wp-mcp' ), 'delete', 'submit', false );
 		echo '</form>';
 	}
+}
+
+function render_images(): void {
+	$max = Media\base64_server_max_mb();
+	printf( '<h2>%s</h2>', esc_html__( 'Images sent by the agent (base64)', 'colorbox-wp-mcp' ) );
+	printf( '<p>%s</p>', wp_kses_post( __( 'The <code>colorbox-import-image</code> tool can take an image from GitHub, from a web address, or as data sent by the agent itself (<code>data_base64</code>), for example an attachment from the conversation. The data travels inside the request and is about a third larger than the file, so it has its own limit.', 'colorbox-wp-mcp' ) ) );
+	printf(
+		'<p>%s</p>',
+		esc_html(
+			sprintf(
+				/* translators: 1: PHP post_max_size value, 2: largest possible limit in MB */
+				__( 'This server accepts requests up to %1$s (PHP post_max_size), so the limit can be at most %2$d MB. To go higher, raise post_max_size (and upload_max_filesize) on the server.', 'colorbox-wp-mcp' ),
+				(string) ini_get( 'post_max_size' ),
+				$max
+			)
+		)
+	);
+	form_open( 'save_images' );
+	echo '<table class="form-table"><tbody>';
+	printf(
+		'<tr><th><label for="base64_mb">%s</label></th><td><input type="number" id="base64_mb" name="base64_mb" min="1" max="%d" value="%d" class="small-text"> MB<p class="description">%s</p></td></tr>',
+		esc_html__( 'Largest base64 image', 'colorbox-wp-mcp' ),
+		$max,
+		Media\base64_limit_mb(),
+		esc_html(
+			sprintf(
+				/* translators: %d: default limit in MB */
+				__( 'Default: %d MB. A reverse proxy in front of the site (nginx, Cloudflare) may have its own request size limit; the plugin cannot see it. The client may also refuse to send large data.', 'colorbox-wp-mcp' ),
+				Media\DEFAULT_BASE64_MB
+			)
+		)
+	);
+	echo '</tbody></table>';
+	submit_button( __( 'Save', 'colorbox-wp-mcp' ) );
+	echo '</form>';
 }

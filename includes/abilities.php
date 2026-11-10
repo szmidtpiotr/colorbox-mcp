@@ -428,7 +428,11 @@ function register_abilities(): void {
 		'colorbox/import-image',
 		array(
 			'label'               => __( 'Import image', 'colorbox-wp-mcp' ),
-			'description'         => __( 'Adds an image to the media library and returns a ready image block (image_block) to insert into content via update-post, or an ID to set as featured_image. Source — exactly one: github (repo+path; fetched by the site server, best for files in a repo), url (public https) or data_base64 (up to 4 MB). JPEG, PNG, WebP, GIF, up to 30 MB. Importing the same file again returns the existing attachment. Always provide alt (a description of the image in the post language).', 'colorbox-wp-mcp' ),
+			'description'         => sprintf(
+				/* translators: %d: base64 size limit in MB */
+				__( 'Adds an image to the media library and returns a ready image block (image_block) to insert into content via update-post, or an ID to set as featured_image. Source — exactly one: github (repo+path; fetched by the site server, best for files in a repo), url (public https) or data_base64 (up to %d MB). JPEG, PNG, WebP, GIF, up to 30 MB. Importing the same file again returns the existing attachment. Always provide alt (a description of the image in the post language).', 'colorbox-wp-mcp' ),
+				Media\base64_limit_mb()
+			),
 			'category'            => CATEGORY,
 			'input_schema'        => array(
 				'type'                 => 'object',

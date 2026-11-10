@@ -48,6 +48,7 @@ Dla ciekawych i dla każdego, kto chce zmieniać kod.
 | Opcja | `colorbox_mcp_tokens` | Odciski tokenów, konto, nazwa, daty. |
 | Opcja | `colorbox_mcp_disabled_tools` | Narzędzia wyłączone w panelu. Brak opcji = ustawienia domyślne. |
 | Opcja | `colorbox_mcp_github_token` | Zaszyfrowany token GitHub. |
+| Opcja | `colorbox_mcp_base64_mb` | Limit obrazków base64 w MB. Brak opcji = 4. |
 | Opcje | `colorbox_mcp_c_…` | Liczniki limitów (krótkotrwałe). |
 | Meta wpisu | `_colorbox_seo_description`, `_colorbox_social_image` | Pola SEO. |
 | Meta wpisu | `_colorbox_review_note` | Notatka agenta do przeglądu. |

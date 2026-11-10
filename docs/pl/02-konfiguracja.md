@@ -2,8 +2,8 @@
 
 *[English → ../en/02-configuration.md](../en/02-configuration.md)*
 
-Wszystko ustawia się w **Ustawienia → Agent MCP**. Panel ma cztery zakładki. Potrzebne są trzy pierwsze; czwarta
-(GitHub) jest opcjonalna.
+Wszystko ustawia się w **Ustawienia → Agent MCP**. Panel ma pięć zakładek. Potrzebne są trzy pierwsze; dwie ostatnie
+(Obrazki i GitHub) są opcjonalne.
 
 ## Zakładka Start
 
@@ -68,6 +68,20 @@ Każde narzędzie ⚠ wymaga też od agenta podania powodu (`reason`), który zo
 [rozdział 7](07-jak-to-dziala.md)).
 
 Pełna lista z opisami jest w [rozdziale 4](04-narzedzia.md).
+
+## Zakładka Obrazki (opcjonalna)
+
+Ustala największy obrazek, jaki agent może przysłać sam jako dane base64 (`data_base64` w `colorbox-import-image`),
+np. załącznik z rozmowy. Domyślnie **4 MB**.
+
+- Dane base64 są o około jedną trzecią większe od pliku i przychodzą w treści zapytania, więc panel pozwala wybrać
+  najwyżej około 70% wartości `post_max_size` z PHP (i nigdy więcej niż 30 MB). Zakładka pokazuje obie liczby.
+- Serwer pośredniczący przed stroną (nginx, Cloudflare) może mieć własny limit wielkości zapytania, którego wtyczka
+  nie widzi. Jeśli większe obrazki kończą się błędem `413`, podnieś go tam.
+- Po zapisaniu użyj w Perplexity **Synchronizuj narzędzia**: limit jest wpisany w opis narzędzia i klient czyta go
+  stamtąd.
+
+Obrazków z GitHuba i z adresu to nie dotyczy; pobiera je serwer, do 30 MB.
 
 ## Zakładka GitHub (opcjonalna)
 

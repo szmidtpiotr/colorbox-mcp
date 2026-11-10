@@ -54,6 +54,7 @@ If `authorization` is missing from the log while the client sends it, the server
 | The agent cannot change a published post | `colorbox-update-post` only works on drafts and pending posts. Enable ⚠ `colorbox-update-published-post` if you want this. |
 | A private GitHub repository fails | No GitHub token, or the token does not cover that repository, or it lacks **Contents: Read-only**. Check the **GitHub** tab. |
 | GitHub stops working after a few dozen images | The 60 requests per hour limit without a token. Add a GitHub token (limit 5,000 per hour). |
+| **base64 data is limited to N MB** | The image is larger than the limit in the **Images** tab. Raise the limit there, or let the agent import the file from GitHub or a web address. |
 | Image import from an address is refused | The address is local or private (refused on purpose), not `https`, or the file is not JPEG/PNG/WebP/GIF. |
 | Code blocks are not coloured | The plugin does not colour code. Add a highlighter to your theme (chapter 4). |
 | The agent's `<script>` or embed disappeared | By design: the agent account has no `unfiltered_html`. Add such things yourself. |
