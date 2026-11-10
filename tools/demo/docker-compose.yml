@@ -1,0 +1,19 @@
+# Throwaway WordPress for trying the plugin and taking screenshots. Local only: http://127.0.0.1:8099
+# Usage: see tools/demo/seed.sh. Remove everything with: docker compose down -v
+services:
+  db:
+    image: mariadb:11
+    environment: {MARIADB_DATABASE: wp, MARIADB_USER: wp, MARIADB_PASSWORD: wp, MARIADB_ROOT_PASSWORD: root}
+  wp:
+    image: wordpress:php8.3-apache
+    depends_on: [db]
+    ports: ["127.0.0.1:8099:80"]
+    environment: {WORDPRESS_DB_HOST: db, WORDPRESS_DB_USER: wp, WORDPRESS_DB_PASSWORD: wp, WORDPRESS_DB_NAME: wp}
+    volumes: [html:/var/www/html]
+  cli:
+    image: wordpress:cli-php8.3
+    user: "33:33"
+    depends_on: [db]
+    environment: {WORDPRESS_DB_HOST: db, WORDPRESS_DB_USER: wp, WORDPRESS_DB_PASSWORD: wp, WORDPRESS_DB_NAME: wp}
+    volumes: [html:/var/www/html, ./zip:/zip]
+volumes: {html: {}}

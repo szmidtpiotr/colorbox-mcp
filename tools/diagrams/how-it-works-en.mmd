@@ -1,0 +1,12 @@
+flowchart LR
+  A["AI agent<br/>Perplexity, Claude Code"] -- "MCP over HTTPS<br/>Authorization: Bearer token" --> B
+  subgraph WP["Your WordPress site"]
+    B["MCP endpoint<br/>/wp-json/colorbox/mcp"] --> C["Token check<br/>and rate limits"]
+    C --> D["Enabled tools<br/>(Settings, Tools tab)"]
+    D --> E["Posts and pages<br/>(the agent writes drafts)"]
+    D --> F["Media library"]
+    D --> G["Comments"]
+    D --> H["Polylang<br/>translations"]
+  end
+  D -. "site server fetches files" .-> I["GitHub<br/>optional token"]
+  J["You, in wp-admin"] -- "review and publish" --> E

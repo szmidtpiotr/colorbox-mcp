@@ -1,0 +1,4 @@
+dist/
+.mcp.json
+tools/demo/zip/
+__pycache__/
