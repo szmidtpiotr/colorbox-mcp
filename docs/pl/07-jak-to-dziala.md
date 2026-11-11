@@ -127,6 +127,21 @@ wp i18n make-mo languages/ && wp i18n make-php languages/
 
 Nowy język: skopiuj `.pot` do `languages/colorbox-wp-mcp-<locale>.po`, przetłumacz i uruchom ostatnią linię.
 
+### Własne narzędzia
+
+Narzędzie, które ma sens tylko na Twojej stronie (kamera na biurku, usługa w sieci domowej), nie wymaga forka.
+Umieść je w małej osobnej wtyczce albo mu-pluginie:
+
+1. Zarejestruj ability WordPressa na `wp_abilities_api_init`, z kategorią `colorbox` i
+   `'meta' => array( 'mcp' => array( 'public' => false ) )`.
+2. Dopisz jej nazwę do serwera filtrem `colorbox_mcp_tools`:
+   `add_filter( 'colorbox_mcp_tools', fn( $tools ) => array_merge( $tools, array( 'moje/narzedzie' ) ) );`
+3. Żeby zapisać obrazek pobrany samodzielnie, wywołaj
+   `Colorbox\WpMcp\Media\import_bytes( array( 'bytes' => …, 'name' => 'zdjecie.jpg', 'source' => 'moje-zrodlo' ), $input )`.
+   Sprawdza typ, rozpoznaje duplikaty, ustawia `alt`/`caption` i zwraca to samo co `colorbox-import-image`.
+
+Takich narzędzi nie ma w zakładce **Narzędzia**; żeby je wyłączyć, wyłącz ich wtyczkę.
+
 ### ZIP do wydania
 
 `bin/build-zip.sh` zapisuje `dist/colorbox-wp-mcp-<wersja>.zip` tylko z tym, czego potrzebuje strona. Podnieś

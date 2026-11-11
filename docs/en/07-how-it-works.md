@@ -125,6 +125,21 @@ wp i18n make-mo languages/ && wp i18n make-php languages/
 
 A new language: copy the `.pot` to `languages/colorbox-wp-mcp-<locale>.po`, translate it, then run the last line.
 
+### Adding your own tools
+
+A tool that only makes sense on your site (a camera on your desk, an internal service) does not need a fork.
+Put it in a small separate plugin or mu-plugin:
+
+1. Register a WordPress ability on `wp_abilities_api_init`, with category `colorbox` and
+   `'meta' => array( 'mcp' => array( 'public' => false ) )`.
+2. Add its name to the server with the `colorbox_mcp_tools` filter:
+   `add_filter( 'colorbox_mcp_tools', fn( $tools ) => array_merge( $tools, array( 'my/tool' ) ) );`
+3. To save an image you fetched yourself, call
+   `Colorbox\WpMcp\Media\import_bytes( array( 'bytes' => …, 'name' => 'photo.jpg', 'source' => 'my-source' ), $input )`.
+   It checks the type, reuses duplicates, sets `alt`/`caption` and returns the same result as `colorbox-import-image`.
+
+Such tools do not appear in the **Tools** tab; to turn one off, deactivate its plugin.
+
 ### Release ZIP
 
 `bin/build-zip.sh` writes `dist/colorbox-wp-mcp-<version>.zip` with only what the site needs. Bump the version in

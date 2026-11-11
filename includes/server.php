@@ -33,7 +33,13 @@ function register( $adapter ): void {
 		array( \WP\MCP\Transport\HttpTransport::class ),
 		\WP\MCP\Infrastructure\ErrorHandling\ErrorLogMcpErrorHandler::class,
 		null,
-		Settings\enabled_tools(),
+		/**
+		 * Lista narzędzi serwera. Inna wtyczka może dopisać tu własne abilities (zarejestrowane na
+		 * wp_abilities_api_init), np. narzędzie potrzebne tylko na jednej stronie.
+		 *
+		 * @param string[] $tools Nazwy abilities włączonych w panelu.
+		 */
+		(array) apply_filters( 'colorbox_mcp_tools', Settings\enabled_tools() ),
 		array(),
 		array(),
 		__NAMESPACE__ . '\\transport_permission'

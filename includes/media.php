@@ -274,17 +274,6 @@ function import_image( array $in ) {
 		return new WP_Error( 'colorbox_one_source', __( 'Give exactly one source: github, url or data_base64.', 'colorbox-wp-mcp' ) );
 	}
 
-	$post_id = (int) ( $in['post_id'] ?? 0 );
-	if ( $post_id ) {
-		$post = Content\get_post_or_error( $post_id );
-		if ( is_wp_error( $post ) ) {
-			return $post;
-		}
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return new WP_Error( 'colorbox_forbidden', __( 'You are not allowed to edit this post.', 'colorbox-wp-mcp' ) );
-		}
-	}
-
 	if ( ! empty( $in['github'] ) ) {
 		$file = fetch_from_github( (array) $in['github'] );
 	} elseif ( ! empty( $in['url'] ) ) {
@@ -294,6 +283,28 @@ function import_image( array $in ) {
 	}
 	if ( is_wp_error( $file ) ) {
 		return $file;
+	}
+	return import_bytes( $file, $in );
+}
+
+/**
+ * Zapisuje pobrany plik w bibliotece mediów: sprawdza typ, wykrywa duplikat, ustawia alt i podpis.
+ * Wspólne dla wszystkich źródeł; inne wtyczki mogą tego użyć dla własnego źródła obrazków.
+ *
+ * @param array{bytes:string,name:string,source:string} $file
+ * @param array<string, mixed>                          $in   post_id, title, alt, caption.
+ * @return array<string, mixed>|WP_Error
+ */
+function import_bytes( array $file, array $in ) {
+	$post_id = (int) ( $in['post_id'] ?? 0 );
+	if ( $post_id ) {
+		$post = Content\get_post_or_error( $post_id );
+		if ( is_wp_error( $post ) ) {
+			return $post;
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return new WP_Error( 'colorbox_forbidden', __( 'You are not allowed to edit this post.', 'colorbox-wp-mcp' ) );
+		}
 	}
 
 	$bytes = $file['bytes'];
