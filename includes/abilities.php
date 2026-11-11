@@ -77,6 +77,19 @@ function can_edit_posts(): bool {
  *
  * @return array<string, mixed>
  */
+/**
+ * Odczyt wpisu: wystarczy prawo do edycji cudzych wpisów tego typu. Samo edit_post odcinałoby redaktora od
+ * stron, które WordPress chroni mocniej (np. polityka prywatności i jej tłumaczenia wymagają
+ * manage_privacy_options), choć przeczytać je może. Zmiany dalej sprawdzają edit_post.
+ */
+function can_read_post( int $id ): bool {
+	if ( current_user_can( 'edit_post', $id ) ) {
+		return true;
+	}
+	$type = get_post_type_object( (string) get_post_type( $id ) );
+	return $type && current_user_can( $type->cap->edit_others_posts );
+}
+
 function input( $input ): array {
 	return is_array( $input ) ? $input : array();
 }
@@ -280,7 +293,7 @@ function register_abilities(): void {
 				$post = Content\get_post_or_error( (int) input( $in )['id'] );
 				return is_wp_error( $post ) ? $post : Content\full_post( $post );
 			},
-			'permission_callback' => static fn( $in ) => current_user_can( 'edit_post', (int) ( input( $in )['id'] ?? 0 ) ),
+			'permission_callback' => static fn( $in ) => can_read_post( (int) ( input( $in )['id'] ?? 0 ) ),
 			'meta'                => readonly_meta(),
 		)
 	);

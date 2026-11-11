@@ -157,7 +157,7 @@ function full_post( WP_Post $post ): array {
 			'tags'          => $terms( 'post_tag' ),
 			'author'        => get_the_author_meta( 'display_name', (int) $post->post_author ),
 			'preview_url'   => get_preview_post_link( $post ),
-			'editable'      => in_array( $post->post_status, EDITABLE_STATUSES, true ),
+			'editable'      => in_array( $post->post_status, EDITABLE_STATUSES, true ) && current_user_can( 'edit_post', $post->ID ),
 			'featured_image' => (int) get_post_thumbnail_id( $post ),
 			'seo_description' => (string) get_post_meta( $post->ID, META_SEO_DESCRIPTION, true ),
 			'social_image'   => (int) get_post_meta( $post->ID, META_SOCIAL_IMAGE, true ),
