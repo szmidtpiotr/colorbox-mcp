@@ -60,7 +60,7 @@ tools/                strona demo, skrypt zrzutów, źródła schematów
 
 ## Stan projektu
 
-Wersja 0.2.0. Działa na żywej stronie dwujęzycznej (PL/EN) z Perplexity i Claude Code. Przetestowana na WordPressie
+Wersja 0.3.0. Działa na żywej stronie dwujęzycznej (PL/EN) z Perplexity i Claude Code. Przetestowana na WordPressie
 7.1, PHP 8.3 i Polylangu 3.9. Jeszcze nie ma: OAuth (potrzebny dla własnych łączników claude.ai), automatycznych
 aktualizacji, sprzątania ustawień przy odinstalowaniu.
 

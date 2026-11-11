@@ -19,10 +19,9 @@ Polylanga.
 
 ## Krok po kroku
 
-1. **Pobierz ZIP.** Na stronie repozytorium otwórz **Releases** i pobierz `colorbox-wp-mcp-<wersja>.zip`.
-   *Jeśli nie ma tam wydania*, użyj **Code → Download ZIP**. Działa tak samo, ale WordPress nazwie katalog wtyczki
-   `colorbox-mcp-main`. Ma to znaczenie tylko przy późniejszym przejściu na ZIP z wydania: najpierw usuń starą
-   wtyczkę.
+1. **Pobierz ZIP.** Na [stronie repozytorium](https://github.com/szmidtpiotr/colorbox-mcp) otwórz **Releases**
+   (prawa kolumna) → najnowsza wersja → **Assets** → `colorbox-wp-mcp-<wersja>.zip`. Nie rozpakowuj go.
+   Inne sposoby pobrania wtyczki z GitHuba są niżej, w części *Inne sposoby instalacji z GitHuba*.
 2. **Wyślij go.** W panelu: **Wtyczki → Dodaj wtyczkę → Wyślij wtyczkę na serwer**, wskaż ZIP, kliknij
    **Zainstaluj teraz**.
    → Widać „Wtyczka została zainstalowana.”
@@ -43,6 +42,38 @@ Polylanga.
 
    Dwa ostatnie wiersze (konto agenta, token) zazielenią się w następnym rozdziale.
 
+## Inne sposoby instalacji z GitHuba
+
+ZIP z wydania (wyżej) to sposób zalecany: zawiera tylko to, czego potrzebuje strona, a nazwa katalogu
+(`colorbox-wp-mcp`) jest taka sama w każdej wersji, więc aktualizacja podmienia wtyczkę na miejscu. Dwa sposoby
+poniżej też działają.
+
+### Code → Download ZIP (najnowszy kod, bez czekania na wydanie)
+
+1. Na stronie repozytorium kliknij zielony przycisk **Code** → **Download ZIP**.
+   → Pobiera się `colorbox-mcp-main.zip`. Nie rozpakowuj go.
+2. Wyślij go jak ZIP z wydania: **Wtyczki → Dodaj wtyczkę → Wyślij wtyczkę na serwer → Zainstaluj teraz →
+   Włącz wtyczkę**.
+
+Różnice względem ZIP-a z wydania:
+
+- Wtyczka ląduje w katalogu `colorbox-mcp-main` zamiast `colorbox-wp-mcp`. WordPress traktuje je jak dwie różne
+  wtyczki. **Jeśli kiedyś przechodzisz z jednego rodzaju ZIP-a na drugi, najpierw wyłącz i usuń starą wtyczkę**
+  (tokeny i ustawienia zostają, są w bazie), inaczej będziesz mieć dwie kopie.
+- W ZIP-ie są też `docs/` i `tools/` (dokumentacja, strona demo, skrypt zrzutów). Na stronie nic nie robią, zajmują
+  tylko kilka MB.
+- `main` to kod wydany. Prace w toku są na gałęzi `develop`; tej nie instaluj na działającej stronie.
+
+### git clone (jeśli masz dostęp SSH do serwera)
+
+```bash
+cd wp-content/plugins
+git clone https://github.com/szmidtpiotr/colorbox-mcp.git colorbox-wp-mcp
+```
+
+Potem **Wtyczki → Colorbox MCP → Włącz**. Późniejsza aktualizacja: `git pull` w tym katalogu. Pliki muszą być
+czytelne dla użytkownika serwera WWW (często `www-data`). Composer nie jest potrzebny: `vendor/` jest w repozytorium.
+
 ## Język wtyczki
 
 Wtyczka mówi językiem Twojego WordPressa: panel jest w języku Twojego profilu, a opisy narzędzi, które czyta agent —
@@ -52,7 +83,10 @@ dostaje angielski.
 ## Aktualizacja
 
 Nie ma automatycznych aktualizacji. Pobierz nowy ZIP i wyślij go tak samo; WordPress zapyta, czy zastąpić obecną
-wersję wysłaną — potwierdź. Tokeny, ustawienia i konto agenta zostają.
+wersję wysłaną — potwierdź. Tokeny, ustawienia i konto agenta zostają. Użyj tego samego rodzaju ZIP-a
+co za pierwszym razem (patrz *Inne sposoby instalacji z GitHuba*). Przy `git clone` wystarczy `git pull`.
+
+Żeby dostawać powiadomienia o nowych wersjach, kliknij na stronie repozytorium **Watch → Custom → Releases**.
 
 ## Usunięcie
 

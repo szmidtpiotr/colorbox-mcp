@@ -3,7 +3,7 @@
  * Plugin Name:       Colorbox MCP — tools for AI agents
  * Plugin URI:        https://github.com/szmidtpiotr/colorbox-mcp
  * Description:       MCP server (official WordPress MCP Adapter + Abilities API) for an AI agent: drafts and translations (Polylang), images, code from GitHub, comments, SEO. The agent never publishes. Bearer-token login valid only on the MCP endpoint. Configure under Settings → MCP Agent.
- * Version:           0.2.0
+ * Version:           0.3.0
  * Requires at least: 6.9
  * Requires PHP:      8.1
  * Author:            Piotr Szmidt / Colorbox Studio
@@ -16,7 +16,7 @@ namespace Colorbox\WpMcp;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION         = '0.2.0';
+const VERSION         = '0.3.0';
 const ROUTE_NAMESPACE = 'colorbox';
 const ROUTE           = 'mcp';
 const SERVER_ID       = 'colorbox-mcp';

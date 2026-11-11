@@ -58,7 +58,7 @@ tools/                demo site, screenshot script, diagram sources
 
 ## Status
 
-Version 0.2.0. Used on a live bilingual (PL/EN) site with Perplexity and Claude Code. Tested on WordPress 7.1,
+Version 0.3.0. Used on a live bilingual (PL/EN) site with Perplexity and Claude Code. Tested on WordPress 7.1,
 PHP 8.3 and Polylang 3.9. Not yet: OAuth (needed for claude.ai custom connectors), automatic updates, cleanup of
 settings on uninstall.
 
