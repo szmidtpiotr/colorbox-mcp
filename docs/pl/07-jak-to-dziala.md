@@ -25,11 +25,12 @@ Dla ciekawych i dla każdego, kto chce zmieniać kod.
 | `colorbox-wp-mcp.php` | Nagłówek wtyczki, stałe, ładowanie części. |
 | `includes/server.php` | Serwer MCP pod `/wp-json/colorbox/mcp` z jawną listą narzędzi. Domyślny serwer adaptera (z ogólnym narzędziem „uruchom dowolną ability”) jest wyłączony. |
 | `includes/auth.php` | Tokeny, logowanie tylko na adresie MCP, limity, tymczasowy zapis nagłówków. |
-| `includes/abilities.php` | Wszystkie 28 narzędzi: nazwy, opisy, schematy wejścia i wyjścia, sprawdzanie uprawnień. |
+| `includes/abilities.php` | Wszystkie 29 narzędzi: nazwy, opisy, schematy wejścia i wyjścia, sprawdzanie uprawnień. |
 | `includes/content.php` | Wpisy, strony, kategorie, języki i tłumaczenia (Polylang). |
 | `includes/manage.php` | Narzędzia ⚠: opublikowane wpisy, wersje, kosz, usuwanie kategorii i obrazków. |
 | `includes/media.php` | Import obrazków (GitHub, adres, base64) i zaszyfrowany token GitHub. |
 | `includes/code.php` | Fragmenty kodu z GitHuba przypięte do commita. |
+| `includes/document.php` | Dokumenty Markdown z GitHuba zamieniane na bloki. |
 | `includes/comments.php` | Przegląd komentarzy, oznaczenia, kolumna i filtr *Agent*. |
 | `includes/review.php` | Ramka w kokpicie i licznik na pasku dla kolejki do przeglądu. |
 | `includes/audit.php` | Raport braków w treściach. |
@@ -141,6 +142,10 @@ Umieść je w małej osobnej wtyczce albo mu-pluginie:
    Sprawdza typ, rozpoznaje duplikaty, ustawia `alt`/`caption` i zwraca to samo co `colorbox-import-image`.
 
 Takich narzędzi nie ma w zakładce **Narzędzia**; żeby je wyłączyć, wyłącz ich wtyczkę.
+
+Żeby powiedzieć agentom o czymś, co ma Twoja strona (np. o blokach motywu), dopisz to do instrukcji serwera —
+tekstu, który klient pokazuje modelowi przed narzędziami:
+`add_filter( 'colorbox_mcp_instructions', fn( $text ) => $text . "\n\nTa strona ma też …" );`
 
 ### ZIP do wydania
 

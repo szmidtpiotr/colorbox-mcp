@@ -43,6 +43,7 @@ require_once __DIR__ . '/includes/seo.php';
 require_once __DIR__ . '/includes/review.php';
 require_once __DIR__ . '/includes/audit.php';
 require_once __DIR__ . '/includes/code.php';
+require_once __DIR__ . '/includes/document.php';
 require_once __DIR__ . '/includes/manage.php';
 require_once __DIR__ . '/includes/settings.php';
 require_once __DIR__ . '/includes/abilities.php';

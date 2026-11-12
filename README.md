@@ -17,6 +17,7 @@ gives it everything. This plugin gives it a narrow, switchable set of tools on a
 - **Translations** linked to the original in Polylang.
 - **Images** from GitHub, a web address or the agent itself, straight into the media library with alt text.
 - **Code from GitHub** as a code block pinned to an exact commit, with a “Source” line.
+- **Documents from GitHub**: a README or any Markdown file turned into ordinary blocks, images included.
 - **Comment moderation** with spam signals: flag, hold, edit, trash — all reversible.
 - **Content audit**: missing translations, featured images, SEO descriptions, alt texts, stale drafts, broken links.
 - **Review queue**: finished drafts wait for you on the dashboard.
@@ -32,7 +33,7 @@ gives it everything. This plugin gives it a narrow, switchable set of tools on a
 | [1. Installation](docs/en/01-installation.md) | Requirements, uploading the ZIP, updating, removing. |
 | [2. Configuration](docs/en/02-configuration.md) | The settings panel: agent account, tokens, tools, GitHub, review queue. |
 | [3. Connecting a client](docs/en/03-clients.md) | Perplexity, Claude Code, checking the connection. |
-| [4. Tools](docs/en/04-tools.md) | All 28 tools, what the agent can never do, how to undo. |
+| [4. Tools](docs/en/04-tools.md) | All 29 tools, what the agent can never do, how to undo. |
 | [5. Security](docs/en/05-security.md) | What a leaked token gives, limits, prompt injection. |
 | [6. Troubleshooting](docs/en/06-troubleshooting.md) | Symptom → cause → fix. |
 | [7. How it works](docs/en/07-how-it-works.md) | Files, stored data, design decisions, development. |

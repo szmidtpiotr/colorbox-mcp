@@ -2,7 +2,7 @@
 
 *[English → ../en/04-tools.md](../en/04-tools.md)*
 
-Wtyczka daje agentowi 28 narzędzi. Każde włączasz i wyłączasz w **Ustawienia → Agent MCP → Narzędzia**; tam jest
+Wtyczka daje agentowi 29 narzędzi. Każde włączasz i wyłączasz w **Ustawienia → Agent MCP → Narzędzia**; tam jest
 też pełny opis, który czyta agent. Ten rozdział wyjaśnia, do czego służą.
 
 ## Czego agent nigdy nie zrobi
@@ -37,6 +37,7 @@ też pełny opis, który czyta agent. Ten rozdział wyjaśnia, do czego służą
 | `colorbox-save-translation` | Tworzy albo poprawia tłumaczenie i łączy je z oryginałem w Polylangu. |
 | `colorbox-set-review-status` | Oddaje szkic Tobie do przeglądu (**Oczekujący** + notatka) albo cofa do szkicu. |
 | `colorbox-import-image` | Dodaje obrazek do biblioteki mediów z GitHuba, z publicznego adresu `https://` albo z danych przysłanych przez agenta. Zwraca gotowy blok obrazka. |
+| `colorbox-github-document` | Plik Markdown z GitHuba (domyślnie `README.md`) jako zwykłe bloki: nagłówki, akapity, listy, kod, tabele, cytaty i obrazki. Przypięty do konkretnego commita; obrazki z repozytorium trafiają do biblioteki mediów; linki do innych plików wskazują na GitHub (repozytorium publiczne) albo zostaje sam ich tekst (prywatne). Pierwszy nagłówek pierwszego poziomu staje się proponowanym tytułem. Znaczki (badge), obrazki SVG i surowy HTML są pomijane i wypisywane agentowi. Do 300 KB i 20 obrazków. |
 | `colorbox-update-image` | Tekst alternatywny, podpis i tytuł obrazka. |
 | `colorbox-create-category`, `colorbox-update-category` | Tworzy kategorię w kilku językach naraz; zmienia nazwę albo położenie jednej. |
 | `colorbox-restore-post` | Wyciąga wpis albo stronę z kosza. Wraca jako szkic. |

@@ -17,6 +17,7 @@ wtyczka daje mu wąski, przełączalny zestaw narzędzi na tokenie, który nigdz
 - **Tłumaczenia** połączone z oryginałem w Polylangu.
 - **Obrazki** z GitHuba, z adresu w internecie albo od samego agenta, prosto do biblioteki mediów, z opisem alt.
 - **Kod z GitHuba** jako blok kodu przypięty do konkretnego commita, z akapitem „Źródło”.
+- **Dokumenty z GitHuba**: README albo dowolny plik Markdown zamieniony na zwykłe bloki, razem z obrazkami.
 - **Moderacja komentarzy** z sygnałami spamu: oznaczenie, wstrzymanie, poprawka, kosz — wszystko odwracalne.
 - **Przegląd treści**: brak tłumaczeń, obrazków wyróżniających, opisów SEO, tekstów alt, stare szkice, zepsute linki.
 - **Kolejka do przeglądu**: gotowe szkice czekają na Ciebie w kokpicie.
@@ -33,7 +34,7 @@ wtyczka daje mu wąski, przełączalny zestaw narzędzi na tokenie, który nigdz
 | [1. Instalacja](docs/pl/01-instalacja.md) | Wymagania, wysłanie ZIP-a, aktualizacja, usunięcie. |
 | [2. Konfiguracja](docs/pl/02-konfiguracja.md) | Panel ustawień: konto agenta, tokeny, narzędzia, GitHub, kolejka do przeglądu. |
 | [3. Podłączenie klienta](docs/pl/03-klienci.md) | Perplexity, Claude Code, sprawdzenie połączenia. |
-| [4. Narzędzia](docs/pl/04-narzedzia.md) | Wszystkie 28 narzędzi, czego agent nigdy nie zrobi, jak cofać. |
+| [4. Narzędzia](docs/pl/04-narzedzia.md) | Wszystkie 29 narzędzi, czego agent nigdy nie zrobi, jak cofać. |
 | [5. Bezpieczeństwo](docs/pl/05-bezpieczenstwo.md) | Co daje wyciek tokenu, limity, wstrzykiwanie poleceń. |
 | [6. Problemy](docs/pl/06-problemy.md) | Objaw → przyczyna → rozwiązanie. |
 | [7. Jak to działa](docs/pl/07-jak-to-dziala.md) | Pliki, zapisywane dane, decyzje projektowe, rozwój. |

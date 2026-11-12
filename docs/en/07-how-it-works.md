@@ -25,11 +25,12 @@ For the curious and for anyone who wants to change the code.
 | `colorbox-wp-mcp.php` | Plugin header, constants, loading the parts. |
 | `includes/server.php` | The MCP server at `/wp-json/colorbox/mcp` with an explicit tool list. The adapter's default server (with a generic “run any ability” tool) is turned off. |
 | `includes/auth.php` | Tokens, sign-in only on the MCP address, rate limits, the temporary header log. |
-| `includes/abilities.php` | All 28 tools: names, descriptions, input/output schemas, permission checks. |
+| `includes/abilities.php` | All 29 tools: names, descriptions, input/output schemas, permission checks. |
 | `includes/content.php` | Posts, pages, categories, languages and translations (Polylang). |
 | `includes/manage.php` | ⚠ tools: published posts, revisions, trash, deleting categories and images. |
 | `includes/media.php` | Image import (GitHub, address, base64) and the encrypted GitHub token. |
 | `includes/code.php` | Code fragments from GitHub pinned to a commit. |
+| `includes/document.php` | Markdown documents from GitHub converted to blocks. |
 | `includes/comments.php` | Comment review, flags, the *Agent* column and filter. |
 | `includes/review.php` | Dashboard box and admin-bar counter for the review queue. |
 | `includes/audit.php` | The content audit report. |
@@ -139,6 +140,10 @@ Put it in a small separate plugin or mu-plugin:
    It checks the type, reuses duplicates, sets `alt`/`caption` and returns the same result as `colorbox-import-image`.
 
 Such tools do not appear in the **Tools** tab; to turn one off, deactivate its plugin.
+
+To tell agents about something your site has (for example blocks of your theme), append to the server instructions —
+the text clients show the model before the tools:
+`add_filter( 'colorbox_mcp_instructions', fn( $text ) => $text . "\n\nThis site also has …" );`
 
 ### Release ZIP
 

@@ -82,6 +82,53 @@ function github_json( string $url, string $repo ) {
 }
 
 /**
+ * Gałąź, tag albo commit → pełny SHA. Pusty ref = gałąź domyślna repo.
+ *
+ * @param array<string, mixed> $info Odpowiedź API repos/{repo}.
+ * @return string|WP_Error
+ */
+function resolve_sha( string $repo, string $ref, array $info ) {
+	$ref    = '' !== $ref ? $ref : (string) $info['default_branch'];
+	$commit = github_json( 'https://api.github.com/repos/' . $repo . '/commits/' . rawurlencode( $ref ), $repo );
+	if ( is_wp_error( $commit ) || empty( $commit['sha'] ) ) {
+		/* translators: 1: branch, tag or commit name, 2: repository (owner/name) */
+		return new WP_Error( 'colorbox_bad_ref', sprintf( __( 'No branch, tag or commit "%1$s" found in %2$s.', 'colorbox-wp-mcp' ), $ref, $repo ) );
+	}
+	return (string) $commit['sha'];
+}
+
+/** Adres pliku na GitHubie przypięty do commita. */
+function blob_url( string $repo, string $sha, string $path ): string {
+	return 'https://github.com/' . $repo . '/blob/' . $sha . '/' . implode( '/', array_map( 'rawurlencode', explode( '/', $path ) ) );
+}
+
+/**
+ * Akapit „Źródło”/„Source” pod kodem albo dokumentem. Dla repo prywatnego bez linku (odwiedzający dostałby 404).
+ * $start/$end = 0: cały plik.
+ */
+function source_block( string $repo, string $path, string $sha, bool $private, string $lang, int $start = 0, int $end = 0 ): string {
+	$en         = 'en' === $lang;
+	$label      = $en ? 'Source' : 'Źródło';
+	$range      = $start ? sprintf( $en ? ', lines %d–%d' : ', linie %d–%d', $start, $end ) : '';
+	$source_txt = esc_html( $repo . '/' . $path );
+
+	if ( $private ) {
+		$source_html = sprintf( '%s: %s%s', $label, $source_txt, esc_html( $range ) );
+	} else {
+		$anchor      = $start ? ( $start === $end ? '#L' . $start : '#L' . $start . '-L' . $end ) : '';
+		$source_html = sprintf(
+			'%1$s: <a href="%2$s">%3$s</a>%4$s (commit <code>%5$s</code>)',
+			$label,
+			esc_url( blob_url( $repo, $sha, $path ) . $anchor ),
+			$source_txt,
+			esc_html( $range ),
+			esc_html( substr( $sha, 0, 7 ) )
+		);
+	}
+	return '<!-- wp:paragraph {"className":"colorbox-code-source","fontSize":"small"} --><p class="colorbox-code-source has-small-font-size">' . $source_html . '</p><!-- /wp:paragraph -->';
+}
+
+/**
  * @param array<string, mixed> $in repo, path, ref?, start_line?, end_line?, language?, lang?
  * @return array<string, mixed>|WP_Error
  */
@@ -101,13 +148,10 @@ function github_code( array $in ) {
 	}
 	$private = ! empty( $info['private'] );
 
-	$ref    = '' !== (string) ( $in['ref'] ?? '' ) ? (string) $in['ref'] : (string) $info['default_branch'];
-	$commit = github_json( 'https://api.github.com/repos/' . $repo . '/commits/' . rawurlencode( $ref ), $repo );
-	if ( is_wp_error( $commit ) || empty( $commit['sha'] ) ) {
-		/* translators: 1: branch, tag or commit name, 2: repository (owner/name) */
-		return new WP_Error( 'colorbox_bad_ref', sprintf( __( 'No branch, tag or commit "%1$s" found in %2$s.', 'colorbox-wp-mcp' ), $ref, $repo ) );
+	$sha = resolve_sha( $repo, (string) ( $in['ref'] ?? '' ), $info );
+	if ( is_wp_error( $sha ) ) {
+		return $sha;
 	}
-	$sha = (string) $commit['sha'];
 
 	$url      = Media\github_contents_url( $repo, $path, $sha );
 	$response = wp_remote_get(
@@ -161,28 +205,8 @@ function github_code( array $in ) {
 		$escaped
 	);
 
-	$en         = 'en' === ( $in['lang'] ?? 'pl' );
-	$label      = $en ? 'Source' : 'Źródło';
-	$range      = ( 1 === $start && $end === $total ) ? '' : sprintf( $en ? ', lines %d–%d' : ', linie %d–%d', $start, $end );
-	$short      = substr( $sha, 0, 7 );
-	$source_txt = esc_html( $repo . '/' . $path );
-
-	if ( $private ) {
-		// Prywatne repo: link dawałby odwiedzającym 404, więc tylko tekst.
-		$source_html = sprintf( '%s: %s%s', $label, $source_txt, esc_html( $range ) );
-	} else {
-		$anchor      = ( 1 === $start && $end === $total ) ? '' : ( $start === $end ? '#L' . $start : '#L' . $start . '-L' . $end );
-		$link        = 'https://github.com/' . $repo . '/blob/' . $sha . '/' . implode( '/', array_map( 'rawurlencode', explode( '/', $path ) ) ) . $anchor;
-		$source_html = sprintf(
-			'%1$s: <a href="%2$s">%3$s</a>%4$s (commit <code>%5$s</code>)',
-			$label,
-			esc_url( $link ),
-			$source_txt,
-			esc_html( $range ),
-			esc_html( $short )
-		);
-	}
-	$source_block = '<!-- wp:paragraph {"className":"colorbox-code-source","fontSize":"small"} --><p class="colorbox-code-source has-small-font-size">' . $source_html . '</p><!-- /wp:paragraph -->';
+	$whole        = 1 === $start && $end === $total;
+	$source_block = source_block( $repo, $path, $sha, $private, (string) ( $in['lang'] ?? 'pl' ), $whole ? 0 : $start, $whole ? 0 : $end );
 
 	return array(
 		'repo'         => $repo,

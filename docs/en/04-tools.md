@@ -2,7 +2,7 @@
 
 *[Polski → ../pl/04-narzedzia.md](../pl/04-narzedzia.md)*
 
-The plugin gives the agent 28 tools. You switch each one on or off in **Settings → MCP Agent → Tools**; the full
+The plugin gives the agent 29 tools. You switch each one on or off in **Settings → MCP Agent → Tools**; the full
 description the agent reads is shown there too. This chapter explains what they are for.
 
 ## What the agent can never do
@@ -36,6 +36,7 @@ description the agent reads is shown there too. This chapter explains what they 
 | `colorbox-save-translation` | Creates or updates a translation and links it to the original in Polylang. |
 | `colorbox-set-review-status` | Hands a draft to you for review (**Pending** + a note) or takes it back to draft. |
 | `colorbox-import-image` | Puts an image into the media library from GitHub, from a public `https://` address or from data sent by the agent. Returns a ready image block. |
+| `colorbox-github-document` | A Markdown file from GitHub (by default `README.md`) as ordinary blocks: headings, paragraphs, lists, code, tables, quotes and images. Pinned to an exact commit; images from the repository go into the media library; links to other files point to GitHub (public repository) or keep only their text (private). The first level-1 heading becomes a suggested title. Badges, SVG images and raw HTML are skipped and listed for the agent. Up to 300 KB and 20 images. |
 | `colorbox-update-image` | Alt text, caption and title of an image. |
 | `colorbox-create-category`, `colorbox-update-category` | Creates a category in several languages at once; renames or moves one. |
 | `colorbox-restore-post` | Takes a post or page out of the trash. It comes back as a draft. |

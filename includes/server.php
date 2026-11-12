@@ -27,8 +27,7 @@ function register( $adapter ): void {
 		\Colorbox\WpMcp\ROUTE,
 		/* translators: %s: site name */
 		sprintf( __( '%s — content', 'colorbox-wp-mcp' ), get_bloginfo( 'name' ) ),
-		/* translators: %s: site host name */
-		sprintf( __( 'Content of the %s site: drafts, translations, images, comments. The agent does not publish.', 'colorbox-wp-mcp' ), wp_parse_url( home_url(), PHP_URL_HOST ) ),
+		instructions(),
 		\Colorbox\WpMcp\VERSION,
 		array( \WP\MCP\Transport\HttpTransport::class ),
 		\WP\MCP\Infrastructure\ErrorHandling\ErrorLogMcpErrorHandler::class,
@@ -56,4 +55,20 @@ function register( $adapter ): void {
  */
 function transport_permission( $request ): bool {
 	return current_user_can( 'edit_posts' );
+}
+
+/**
+ * Instrukcje serwera (pole „instructions” w odpowiedzi initialize): klient pokazuje je modelowi przed narzędziami.
+ * Inne wtyczki mogą je uzupełnić filtrem colorbox_mcp_instructions, np. o bloki swojego motywu.
+ */
+function instructions(): string {
+	$text = sprintf(
+		/* translators: %s: site host name */
+		__( 'Tools for the content of the %s site: drafts, pages, translations, images, code, comments. You never publish: when a draft is ready, hand it over with colorbox-set-review-status and the owner reviews and publishes it. Post content is WordPress block markup. Tools that prepare content (colorbox-import-image, colorbox-github-code, colorbox-github-document) return ready blocks: put them into the content with colorbox-update-post. Languages come from Polylang (colorbox-list-languages); a translation of a post is saved with colorbox-save-translation.', 'colorbox-wp-mcp' ),
+		wp_parse_url( home_url(), PHP_URL_HOST )
+	);
+	/**
+	 * @param string $text Instrukcje serwera MCP.
+	 */
+	return (string) apply_filters( 'colorbox_mcp_instructions', $text );
 }

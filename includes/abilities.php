@@ -11,6 +11,7 @@ use Colorbox\WpMcp\Media;
 use Colorbox\WpMcp\Comments;
 use Colorbox\WpMcp\Audit;
 use Colorbox\WpMcp\Code;
+use Colorbox\WpMcp\Document;
 use Colorbox\WpMcp\Manage;
 
 defined( 'ABSPATH' ) || exit;
@@ -39,6 +40,7 @@ const NAMES = array(
 	'colorbox/create-category',
 	'colorbox/content-audit',
 	'colorbox/github-code',
+	'colorbox/github-document',
 	'colorbox/update-published-post',
 	'colorbox/restore-post-revision',
 	'colorbox/trash-post',
@@ -842,6 +844,44 @@ function register_abilities(): void {
 			'execute_callback'    => static fn( $in ) => Code\github_code( input( $in ) ),
 			'permission_callback' => __NAMESPACE__ . '\\can_edit_posts',
 			'meta'                => readonly_meta(),
+		)
+	);
+
+	wp_register_ability(
+		'colorbox/github-document',
+		array(
+			'label'               => __( 'GitHub document', 'colorbox-wp-mcp' ),
+			'description'         => __( 'Converts a Markdown file from a GitHub repository (private ones too; default README.md) into ordinary blocks — headings, paragraphs, lists, code with syntax highlighting, tables, quotes, images — to insert into a post via update-post. The ref is pinned to the full commit SHA. Images from the repo are imported into the media library (alt from the Markdown). Links to other repo files point to GitHub at that commit for a public repo; for a private one only their text is kept. The first level-1 heading is returned as "title" instead of a block; badges, SVG images and raw HTML that cannot be converted safely are skipped and listed in "skipped". A "Source" paragraph is added at the end. Up to 300 KB and 20 images.', 'colorbox-wp-mcp' ),
+			'category'            => CATEGORY,
+			'input_schema'        => array(
+				'type'                 => 'object',
+				'properties'           => array(
+					'repo'           => $github_schema['properties']['repo'],
+					'path'           => array(
+						'type'        => 'string',
+						'description' => __( 'Path of the Markdown file in the repo. Default README.md.', 'colorbox-wp-mcp' ),
+					),
+					'ref'            => $github_schema['properties']['ref'],
+					'lang'           => array(
+						'type'        => 'string',
+						'description' => __( 'Post language — for the "Źródło"/"Source" label.', 'colorbox-wp-mcp' ),
+					),
+					'post_id'        => array(
+						'type'        => 'integer',
+						'description' => __( 'Optional post the imported images belong to.', 'colorbox-wp-mcp' ),
+					),
+					'heading_offset' => array(
+						'type'        => 'integer',
+						'description' => __( 'Shift heading levels down by 0–4 (e.g. 1 turns ## into ###) when the document goes under an existing heading. Default 0.', 'colorbox-wp-mcp' ),
+					),
+				),
+				'required'             => array( 'repo' ),
+				'additionalProperties' => false,
+			),
+			'output_schema'       => $object,
+			'execute_callback'    => static fn( $in ) => Document\github_document( input( $in ) ),
+			'permission_callback' => static fn() => current_user_can( 'upload_files' ) && current_user_can( 'edit_posts' ),
+			'meta'                => write_meta( true ),
 		)
 	);
 
