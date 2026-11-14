@@ -6,7 +6,7 @@ Każde wydanie dostaje tu wpis, zanim powstanie tag. Wpis jest pisany dla osoby,
 dla niej zmieniło, a nie które pliki się przesunęły. Ten sam tekst trafia do opisu wydania na GitHubie.
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numery wersji: [SemVer](https://semver.org/lang/pl/).
 
-## [0.5.0] — jeszcze niewydana
+## [0.5.0] — 2026-11-14
 
 ### Dodane
 - **Data wpisu** (`date`) w `colorbox-create-draft`, `colorbox-update-post` i `colorbox-update-published-post`,
@@ -61,7 +61,7 @@ Pierwsza wersja w tym repozytorium, gotowa do udostępnienia.
 - Panel **Ustawienia → Agent MCP**: konto agenta, tokeny, włączanie i wyłączanie narzędzi, token GitHub.
 - Interfejs i opisy narzędzi po angielsku i po polsku.
 
-[0.5.0]: https://github.com/szmidtpiotr/colorbox-mcp/compare/v0.4.0...develop
+[0.5.0]: https://github.com/szmidtpiotr/colorbox-mcp/releases/tag/v0.5.0
 [0.4.0]: https://github.com/szmidtpiotr/colorbox-mcp/releases/tag/v0.4.0
 [0.3.1]: https://github.com/szmidtpiotr/colorbox-mcp/releases/tag/v0.3.1
 [0.3.0]: https://github.com/szmidtpiotr/colorbox-mcp/releases/tag/v0.3.0

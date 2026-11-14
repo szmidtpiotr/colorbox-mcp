@@ -6,7 +6,7 @@ Every release gets an entry here before it is tagged, written for the person who
 changed for them, not which files moved. The same text goes into the GitHub release notes.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions: [SemVer](https://semver.org/).
 
-## [0.5.0] — not released yet
+## [0.5.0] — 2026-11-14
 
 ### Added
 - **Post date** (`date`) in `colorbox-create-draft`, `colorbox-update-post` and `colorbox-update-published-post`,
@@ -61,7 +61,7 @@ First version in this repository, ready to share.
 - **Settings → MCP Agent** panel: agent account, tokens, switching tools on and off, GitHub token.
 - English and Polish interface and tool descriptions.
 
-[0.5.0]: https://github.com/szmidtpiotr/colorbox-mcp/compare/v0.4.0...develop
+[0.5.0]: https://github.com/szmidtpiotr/colorbox-mcp/releases/tag/v0.5.0
 [0.4.0]: https://github.com/szmidtpiotr/colorbox-mcp/releases/tag/v0.4.0
 [0.3.1]: https://github.com/szmidtpiotr/colorbox-mcp/releases/tag/v0.3.1
 [0.3.0]: https://github.com/szmidtpiotr/colorbox-mcp/releases/tag/v0.3.0
