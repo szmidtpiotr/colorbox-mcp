@@ -145,6 +145,10 @@ function post_field_schema(): array {
 			'type'        => 'integer',
 			'description' => __( 'Pages only: parent page ID (e.g. "Projects"). 0 = no parent.', 'colorbox-wp-mcp' ),
 		),
+		'date'            => array(
+			'type'        => 'string',
+			'description' => __( 'Post date in the site local time: "YYYY-MM-DD HH:MM:SS" or "YYYY-MM-DD HH:MM", e.g. "2024-03-15 18:30". Use it to backdate a post about an older project so the blog keeps the order in which things were made. On a draft the date is pinned and stays after the owner publishes it (get-post then shows date_fixed=true); without it a draft gets the moment of publishing. A date in the future is refused — the agent does not schedule posts.', 'colorbox-wp-mcp' ),
+		),
 	);
 }
 
@@ -336,7 +340,7 @@ function register_abilities(): void {
 		'colorbox/update-post',
 		array(
 			'label'               => __( 'Update post', 'colorbox-wp-mcp' ),
-			'description'         => __( 'Changes the title, content (blocks), excerpt, categories, tags, slug, SEO description, images or parent page of an existing draft or pending post/page. Supplied fields replace the old values; omitted fields stay unchanged. Does not change the status; published content is edited with update-published-post.', 'colorbox-wp-mcp' ),
+			'description'         => __( 'Changes the title, content (blocks), excerpt, categories, tags, slug, SEO description, images, parent page or date of an existing draft or pending post/page. Supplied fields replace the old values; omitted fields stay unchanged. Does not change the status; published content is edited with update-published-post.', 'colorbox-wp-mcp' ),
 			'category'            => CATEGORY,
 			'input_schema'        => array(
 				'type'                 => 'object',

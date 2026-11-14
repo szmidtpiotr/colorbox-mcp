@@ -32,7 +32,7 @@ description the agent reads is shown there too. This chapter explains what they 
 | Tool | What it does |
 |---|---|
 | `colorbox-create-draft` | A new post or page, always as a draft, in the given language. |
-| `colorbox-update-post` | Changes a draft or pending post: title, content, excerpt, categories, tags, slug, SEO description, images, parent page. Refuses published content. |
+| `colorbox-update-post` | Changes a draft or pending post: title, content, excerpt, categories, tags, slug, SEO description, images, parent page, date. Refuses published content. |
 | `colorbox-save-translation` | Creates or updates a translation and links it to the original in Polylang. |
 | `colorbox-set-review-status` | Hands a draft to you for review (**Pending** + a note) or takes it back to draft. |
 | `colorbox-import-image` | Puts an image into the media library from GitHub, from a public `https://` address or from data sent by the agent. Returns a ready image block. |
@@ -57,6 +57,20 @@ These are off on a fresh install, except *Trash or spam comment*. Each one requi
 | `colorbox-trash-post` | Moves a post or page to the trash. Refuses the front page, the posts page (in every language) and pages that have child pages. | `colorbox-restore-post` or **Posts → Trash** within 30 days |
 | `colorbox-delete-category` | Deletes one language version of a category. Posts left without a category get the default one in their language. | None — recreate the category. |
 | `colorbox-delete-image` | Deletes an image and its files. Refuses if the image is used anywhere (content, featured image, social image) and says where. | None — WordPress has no trash for media. |
+
+## Post date
+
+`colorbox-create-draft`, `colorbox-update-post` and `colorbox-update-published-post` accept an optional `date` in
+the site local time, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DD HH:MM` (for example `2024-03-15 18:30`). Use it for a
+post about an older project, so the blog keeps the order in which things were made.
+
+- **On a draft the date is pinned.** Normally WordPress gives a draft the moment you publish it; with `date` set
+  the draft keeps that date after publishing. `colorbox-get-post` shows `date_fixed: true` for such a draft.
+- **No dates in the future.** That would be scheduling a post, and only you publish. A malformed or non-existent
+  date is refused too, and the agent cannot change the date of a scheduled post.
+- **Logged.** Each date change is recorded on the post (`_colorbox_agent_log`, action `set-date`, old and new
+  date). WordPress revisions do not store the date, so `colorbox-update-published-post` also returns
+  `previous_date`, which the agent passes back as `date` to undo it.
 
 ## Things that happen automatically
 

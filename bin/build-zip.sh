@@ -9,7 +9,7 @@ mkdir -p "$OUT"
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 mkdir "$TMP/colorbox-wp-mcp"
-cp -r colorbox-wp-mcp.php includes languages vendor composer.json composer.lock README.md README.pl.md LICENSE "$TMP/colorbox-wp-mcp/"
+cp -r colorbox-wp-mcp.php includes languages vendor composer.json composer.lock README.md README.pl.md CHANGELOG.md CHANGELOG.pl.md LICENSE "$TMP/colorbox-wp-mcp/"
 (cd "$TMP" && python3 -m zipfile -c "colorbox-wp-mcp-$VERSION.zip" colorbox-wp-mcp)
 mv "$TMP/colorbox-wp-mcp-$VERSION.zip" "$OUT/"
 echo "$OUT/colorbox-wp-mcp-$VERSION.zip"

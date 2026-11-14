@@ -37,6 +37,7 @@ gives it everything. This plugin gives it a narrow, switchable set of tools on a
 | [5. Security](docs/en/05-security.md) | What a leaked token gives, limits, prompt injection. |
 | [6. Troubleshooting](docs/en/06-troubleshooting.md) | Symptom → cause → fix. |
 | [7. How it works](docs/en/07-how-it-works.md) | Files, stored data, design decisions, development. |
+| [Changelog](CHANGELOG.md) | What changed in each version. |
 
 ## Shortest path (about 15 minutes)
 
@@ -49,6 +50,7 @@ gives it everything. This plugin gives it a narrow, switchable set of tools on a
 
 ```
 colorbox-wp-mcp.php   plugin entry point
+CHANGELOG.md          what changed in each version (PL: CHANGELOG.pl.md)
 includes/             the plugin code (one file per area)
 languages/            Polish translation and the .pot template
 vendor/               WordPress MCP Adapter (committed, no Composer needed)
@@ -59,7 +61,7 @@ tools/                demo site, screenshot script, diagram sources
 
 ## Status
 
-Version 0.4.0. Used on a live bilingual (PL/EN) site with Perplexity and Claude Code. Tested on WordPress 7.1,
+Version 0.5.0. Used on a live bilingual (PL/EN) site with Perplexity and Claude Code. Tested on WordPress 7.1,
 PHP 8.3 and Polylang 3.9. Not yet: OAuth (needed for claude.ai custom connectors), automatic updates, cleanup of
 settings on uninstall.
 

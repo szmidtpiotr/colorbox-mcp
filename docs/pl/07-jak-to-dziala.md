@@ -53,7 +53,7 @@ Dla ciekawych i dla każdego, kto chce zmieniać kod.
 | Opcje | `colorbox_mcp_c_…` | Liczniki limitów (krótkotrwałe). |
 | Meta wpisu | `_colorbox_seo_description`, `_colorbox_social_image` | Pola SEO. |
 | Meta wpisu | `_colorbox_review_note` | Notatka agenta do przeglądu. |
-| Meta wpisu | `_colorbox_agent_log` | 20 ostatnich akcji ⚠ na tym wpisie: narzędzie, powód, czas, konto. |
+| Meta wpisu | `_colorbox_agent_log` | 20 ostatnich akcji ⚠ i zmian daty (`set-date`, data stara i nowa) na tym wpisie: narzędzie, powód, czas, konto. |
 | Meta komentarza | `_colorbox_flag`, `_colorbox_flag_reason`, … | Oznaczenia agenta; `_colorbox_prev_content` do cofnięcia poprawki. |
 
 ## Decyzje projektowe
@@ -97,6 +97,13 @@ docker compose up -d
 
 Otwórz `http://127.0.0.1:8099/wp-admin` (login `admin`, hasło `demo-pass-123`). `docker compose down -v` usuwa
 wszystko.
+
+### Testy
+
+`tools/demo/test-date.sh` uruchamia na stronie demo testy pola daty (`tools/demo/test-date.php`): wywołuje narzędzia
+tak jak serwer MCP, z kontem Redaktora, sprawdza datę wsteczną w szkicu przed i po publikacji, odrzucanie dat
+w przyszłości i złych formatów, dziennik i cofanie w `update-published-post`. Kod wyjścia 0 = wszystko przeszło.
+Strona musi być postawiona z ZIP-a bieżącego kodu (kroki wyżej).
 
 ### Zrzuty do dokumentacji
 
@@ -147,10 +154,17 @@ Takich narzędzi nie ma w zakładce **Narzędzia**; żeby je wyłączyć, wyłą
 tekstu, który klient pokazuje modelowi przed narzędziami:
 `add_filter( 'colorbox_mcp_instructions', fn( $text ) => $text . "\n\nTa strona ma też …" );`
 
-### ZIP do wydania
+### Wydanie
 
-`bin/build-zip.sh` zapisuje `dist/colorbox-wp-mcp-<wersja>.zip` tylko z tym, czego potrzebuje strona. Podnieś
-wersję w nagłówku i w `const VERSION` w `colorbox-wp-mcp.php`.
+Każda zmiana, która trafi do wydania, dostaje od razu wpis w `CHANGELOG.md` i `CHANGELOG.pl.md`, w sekcji
+najbliższej wersji („jeszcze niewydana”). Przy wydaniu:
+
+1. Podnieś wersję w nagłówku i w `const VERSION` w `colorbox-wp-mcp.php` oraz w akapicie „Stan projektu” obu README.
+2. W obu plikach historii zmian zamień „jeszcze niewydana” na datę wydania i popraw link wersji na końcu pliku
+   (`releases/tag/v<wersja>`).
+3. `bin/build-zip.sh` zapisuje `dist/colorbox-wp-mcp-<wersja>.zip` tylko z tym, czego potrzebuje strona (razem
+   z historią zmian).
+4. Opis wydania na GitHubie = wpis z `CHANGELOG.md` dla tej wersji, plus jedna linia o instalacji ZIP-a.
 
 ---
 

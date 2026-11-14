@@ -74,13 +74,14 @@ function update_published_post( array $in ) {
 
 	$before = snapshot_revision( $post->ID );
 	$lang   = Content\post_language( $post->ID ) ?: Content\default_language();
-	$id     = Content\save_post_fields( $post, $fields, $lang );
+	// Zmianę daty save_post_fields zapisuje w dzienniku osobno (set-date, z datą sprzed i po) — z tym powodem.
+	$id = Content\save_post_fields( $post, $fields + array( '_reason' => $reason ), $lang );
 	if ( is_wp_error( $id ) ) {
 		return $id;
 	}
 	log_action( $post->ID, 'update-published', $reason, array( 'undo_revision_id' => $before ) );
 
-	return Content\full_post( get_post( $id ) ) + array(
+	$out = Content\full_post( get_post( $id ) ) + array(
 		'undo_revision_id' => $before,
 		'how_to_undo'      => $before
 			? sprintf(
@@ -91,6 +92,17 @@ function update_published_post( array $in ) {
 			)
 			: __( 'No revision available; the change can only be undone manually.', 'colorbox-wp-mcp' ),
 	);
+	if ( array_key_exists( 'date', $fields ) && $out['date'] !== $post->post_date ) {
+		// Rewizja WordPressa nie przechowuje daty, więc do cofnięcia trzeba podać poprzednią.
+		$out['previous_date'] = $post->post_date;
+		$out['how_to_undo']  .= ' ' . sprintf(
+			/* translators: 1: post ID, 2: previous post date */
+			__( 'The date is not stored in the revision: to undo it call update-published-post with id=%1$d and date="%2$s".', 'colorbox-wp-mcp' ),
+			$post->ID,
+			$post->post_date
+		);
+	}
+	return $out;
 }
 
 /**

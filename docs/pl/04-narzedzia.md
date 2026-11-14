@@ -33,7 +33,7 @@ też pełny opis, który czyta agent. Ten rozdział wyjaśnia, do czego służą
 | Narzędzie | Co robi |
 |---|---|
 | `colorbox-create-draft` | Nowy wpis albo strona, zawsze jako szkic, w podanym języku. |
-| `colorbox-update-post` | Zmienia szkic albo wpis oczekujący: tytuł, treść, zajawkę, kategorie, tagi, slug, opis SEO, obrazki, stronę nadrzędną. Odmawia przy opublikowanych. |
+| `colorbox-update-post` | Zmienia szkic albo wpis oczekujący: tytuł, treść, zajawkę, kategorie, tagi, slug, opis SEO, obrazki, stronę nadrzędną, datę. Odmawia przy opublikowanych. |
 | `colorbox-save-translation` | Tworzy albo poprawia tłumaczenie i łączy je z oryginałem w Polylangu. |
 | `colorbox-set-review-status` | Oddaje szkic Tobie do przeglądu (**Oczekujący** + notatka) albo cofa do szkicu. |
 | `colorbox-import-image` | Dodaje obrazek do biblioteki mediów z GitHuba, z publicznego adresu `https://` albo z danych przysłanych przez agenta. Zwraca gotowy blok obrazka. |
@@ -58,6 +58,20 @@ Po instalacji wyłączone, poza *Komentarz do kosza lub spamu*. Każde wymaga od
 | `colorbox-trash-post` | Przenosi wpis albo stronę do kosza. Odmawia dla strony głównej, strony wpisów (w każdym języku) i stron, które mają podstrony. | `colorbox-restore-post` albo **Wpisy → Kosz** w ciągu 30 dni |
 | `colorbox-delete-category` | Usuwa jedną wersję językową kategorii. Wpisy bez kategorii dostają domyślną w swoim języku. | Brak — trzeba utworzyć kategorię od nowa. |
 | `colorbox-delete-image` | Usuwa obrazek razem z plikami. Odmawia, jeśli obrazek jest gdziekolwiek użyty (treść, obrazek wyróżniający, obrazek do udostępnień), i mówi gdzie. | Brak — WordPress nie ma kosza dla mediów. |
+
+## Data wpisu
+
+`colorbox-create-draft`, `colorbox-update-post` i `colorbox-update-published-post` przyjmują opcjonalne pole `date`
+w czasie lokalnym strony: `YYYY-MM-DD HH:MM:SS` albo `YYYY-MM-DD HH:MM` (np. `2024-03-15 18:30`). Służy do wpisów
+o starszych projektach, żeby blog zachował kolejność, w jakiej rzeczy powstawały.
+
+- **W szkicu data zostaje przypięta.** Zwykle WordPress daje szkicowi chwilę, w której go publikujesz; z polem
+  `date` szkic zachowuje tę datę po publikacji. `colorbox-get-post` pokazuje wtedy `date_fixed: true`.
+- **Bez dat w przyszłości.** To byłoby planowanie publikacji, a publikujesz tylko Ty. Zły format i data, która nie
+  istnieje, też dają błąd; daty wpisu zaplanowanego agent nie zmieni.
+- **Zapis w dzienniku.** Każda zmiana daty trafia do dziennika przy wpisie (`_colorbox_agent_log`, akcja
+  `set-date`, data stara i nowa). Rewizje WordPressa nie przechowują daty, więc `colorbox-update-published-post`
+  zwraca też `previous_date` — agent podaje ją z powrotem jako `date`, żeby cofnąć zmianę.
 
 ## Co dzieje się samo
 

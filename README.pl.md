@@ -38,6 +38,7 @@ wtyczka daje mu wąski, przełączalny zestaw narzędzi na tokenie, który nigdz
 | [5. Bezpieczeństwo](docs/pl/05-bezpieczenstwo.md) | Co daje wyciek tokenu, limity, wstrzykiwanie poleceń. |
 | [6. Problemy](docs/pl/06-problemy.md) | Objaw → przyczyna → rozwiązanie. |
 | [7. Jak to działa](docs/pl/07-jak-to-dziala.md) | Pliki, zapisywane dane, decyzje projektowe, rozwój. |
+| [Historia zmian](CHANGELOG.pl.md) | Co się zmieniło w każdej wersji. |
 
 ## Najkrótsza droga (około 15 minut)
 
@@ -51,6 +52,7 @@ wtyczka daje mu wąski, przełączalny zestaw narzędzi na tokenie, który nigdz
 
 ```
 colorbox-wp-mcp.php   punkt wejścia wtyczki
+CHANGELOG.pl.md       historia zmian (EN: CHANGELOG.md)
 includes/             kod wtyczki (jeden plik na obszar)
 languages/            tłumaczenie polskie i szablon .pot
 vendor/               WordPress MCP Adapter (w repo, Composer niepotrzebny)
@@ -61,7 +63,7 @@ tools/                strona demo, skrypt zrzutów, źródła schematów
 
 ## Stan projektu
 
-Wersja 0.4.0. Działa na żywej stronie dwujęzycznej (PL/EN) z Perplexity i Claude Code. Przetestowana na WordPressie
+Wersja 0.5.0. Działa na żywej stronie dwujęzycznej (PL/EN) z Perplexity i Claude Code. Przetestowana na WordPressie
 7.1, PHP 8.3 i Polylangu 3.9. Jeszcze nie ma: OAuth (potrzebny dla własnych łączników claude.ai), automatycznych
 aktualizacji, sprzątania ustawień przy odinstalowaniu.
 

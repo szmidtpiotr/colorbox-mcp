@@ -118,6 +118,8 @@ function summarize_post( WP_Post $post ): array {
 		'status'       => $post->post_status,
 		'lang'         => post_language( $post->ID ),
 		'date'         => $post->post_date,
+		// false = szkic bez przypiętej daty: WordPress nada mu datę dopiero w chwili publikacji.
+		'date_fixed'   => has_fixed_date( $post ),
 		'modified'     => $post->post_modified,
 		'categories'   => 'post' === $post->post_type ? wp_get_post_categories( $post->ID, array( 'fields' => 'names' ) ) : array(),
 		'parent'       => (int) $post->post_parent,
@@ -351,14 +353,94 @@ function resolve_tags( array $names, string $lang ) {
 }
 
 /**
+ * Czy wpis ma przypiętą datę. Szkic bez niej ma w bazie post_date_gmt = 0000-00-00 i przy każdym zapisie
+ * dostaje post_date „teraz”, a przy publikacji — datę publikacji.
+ */
+function has_fixed_date( WP_Post $post ): bool {
+	return '0000-00-00 00:00:00' !== $post->post_date_gmt && '' !== (string) $post->post_date_gmt;
+}
+
+/**
+ * Data wpisu podana przez agenta, w czasie lokalnym strony: "YYYY-MM-DD HH:MM:SS" albo "YYYY-MM-DD HH:MM".
+ * Zły format, nieistniejąca data i data w przyszłości to błąd — data w przyszłości oznaczałaby planowanie
+ * publikacji, a publikuje człowiek.
+ *
+ * @param mixed $value
+ * @return array{0: string, 1: string}|WP_Error [ post_date, post_date_gmt ]
+ */
+function parse_post_date( $value ) {
+	$raw = is_string( $value ) ? trim( $value ) : '';
+	if ( ! preg_match( '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/', $raw ) ) {
+		return new WP_Error(
+			'colorbox_bad_date',
+			sprintf(
+				/* translators: %s: the value received */
+				__( 'Invalid date "%s". Use the site local time in the format YYYY-MM-DD HH:MM:SS or YYYY-MM-DD HH:MM, e.g. 2024-03-15 18:30.', 'colorbox-wp-mcp' ),
+				is_scalar( $value ) ? (string) $value : gettype( $value )
+			)
+		);
+	}
+	if ( 16 === strlen( $raw ) ) {
+		$raw .= ':00';
+	}
+
+	$zone = wp_timezone();
+	$date = \DateTimeImmutable::createFromFormat( '!Y-m-d H:i:s', $raw, $zone );
+	// Porównanie z wejściem odrzuca 31 lutego i godzinę wypadającą przy zmianie czasu (PHP by je przesunął).
+	if ( ! $date || $date->format( 'Y-m-d H:i:s' ) !== $raw || (int) $date->format( 'Y' ) < 1970 ) {
+		return new WP_Error(
+			'colorbox_bad_date',
+			sprintf(
+				/* translators: 1: the date received, 2: site time zone name */
+				__( 'The date "%1$s" does not exist in the site time zone (%2$s) or is earlier than 1970.', 'colorbox-wp-mcp' ),
+				$raw,
+				$zone->getName()
+			)
+		);
+	}
+	if ( $date->getTimestamp() > time() ) {
+		return new WP_Error(
+			'colorbox_future_date',
+			sprintf(
+				/* translators: 1: the date received, 2: current site time, 3: site time zone name */
+				__( 'The date "%1$s" is in the future (site time now: %2$s, %3$s). The agent does not schedule or publish posts; give a past date or leave the date out.', 'colorbox-wp-mcp' ),
+				$raw,
+				current_time( 'mysql' ),
+				$zone->getName()
+			)
+		);
+	}
+
+	return array( $raw, get_gmt_from_date( $raw ) );
+}
+
+/**
  * Wspólny zapis pól wpisu (nowego albo poprawianego). Status zawsze 'draft' przy tworzeniu
  * i nietknięty przy poprawce.
  *
- * @param array<string, mixed> $fields title, content, excerpt, categories, tags
+ * @param array<string, mixed> $fields title, content, excerpt, categories, tags, date…; klucze z podkreśleniem
+ *                                     są wewnętrzne (_type, _default_categories, _reason — powód do dziennika).
  * @return int|WP_Error ID wpisu.
  */
 function save_post_fields( ?WP_Post $post, array $fields, string $lang ) {
 	$data = array();
+	$date = null;
+	if ( array_key_exists( 'date', $fields ) ) {
+		// Zaplanowany wpis z datą wsteczną WordPress opublikowałby od razu — termin ustawia właściciel strony.
+		if ( null !== $post && 'future' === $post->post_status ) {
+			/* translators: %d: post ID */
+			return new WP_Error( 'colorbox_scheduled_date', sprintf( __( 'Post %d is scheduled for publication; changing its date would publish it or move the schedule. The site owner changes it in the admin panel.', 'colorbox-wp-mcp' ), $post->ID ) );
+		}
+		$date = parse_post_date( $fields['date'] );
+		if ( is_wp_error( $date ) ) {
+			return $date;
+		}
+		// Bez edit_date i jawnego post_date_gmt wp_update_post wyczyściłby datę szkicu (dostałby „teraz”
+		// przy publikacji). Obie daty razem, żeby czas lokalny i GMT nigdy się nie rozjechały.
+		$data['post_date']     = $date[0];
+		$data['post_date_gmt'] = $date[1];
+		$data['edit_date']     = true;
+	}
 	if ( array_key_exists( 'title', $fields ) ) {
 		$data['post_title'] = (string) $fields['title'];
 	}
@@ -473,6 +555,22 @@ function save_post_fields( ?WP_Post $post, array $fields, string $lang ) {
 		}
 	}
 
+	if ( null !== $date ) {
+		$was_fixed = null !== $post && has_fixed_date( $post );
+		if ( ! $was_fixed || $post->post_date !== $date[0] ) {
+			\Colorbox\WpMcp\Manage\log_action(
+				(int) $id,
+				'set-date',
+				(string) ( $fields['_reason'] ?? '' ),
+				array(
+					// Pusty date_from = wpis nie miał przypiętej daty (nowy albo szkic z datą „przy publikacji”).
+					'date_from' => $was_fixed ? $post->post_date : '',
+					'date_to'   => $date[0],
+				)
+			);
+		}
+	}
+
 	if ( null !== $cats ) {
 		wp_set_post_categories( $id, $cats );
 	}
@@ -557,7 +655,7 @@ function update_post( array $input ) {
 
 	$fields = pick_fields( $input );
 	if ( ! $fields ) {
-		return new WP_Error( 'colorbox_nothing_to_do', __( 'Provide at least one field to change: title, content, excerpt, categories, tags, featured_image, slug, seo_description, social_image, parent.', 'colorbox-wp-mcp' ) );
+		return new WP_Error( 'colorbox_nothing_to_do', __( 'Provide at least one field to change: title, content, excerpt, categories, tags, featured_image, slug, seo_description, social_image, parent, date.', 'colorbox-wp-mcp' ) );
 	}
 
 	$lang = post_language( $post->ID ) ?: default_language();
@@ -690,7 +788,7 @@ function save_translation( array $input ) {
  * @return array<string, mixed>
  */
 function pick_fields( array $input ): array {
-	return array_intersect_key( $input, array_flip( array( 'title', 'content', 'excerpt', 'categories', 'tags', 'featured_image', 'slug', 'seo_description', 'social_image', 'parent' ) ) );
+	return array_intersect_key( $input, array_flip( array( 'title', 'content', 'excerpt', 'categories', 'tags', 'featured_image', 'slug', 'seo_description', 'social_image', 'parent', 'date' ) ) );
 }
 
 /**

@@ -53,7 +53,7 @@ For the curious and for anyone who wants to change the code.
 | Options | `colorbox_mcp_c_…` | Rate-limit counters (short-lived). |
 | Post meta | `_colorbox_seo_description`, `_colorbox_social_image` | SEO fields. |
 | Post meta | `_colorbox_review_note` | The agent's note for review. |
-| Post meta | `_colorbox_agent_log` | The last 20 ⚠ actions on that post: tool, reason, time, account. |
+| Post meta | `_colorbox_agent_log` | The last 20 ⚠ actions and date changes (`set-date`, old and new date) on that post: tool, reason, time, account. |
 | Comment meta | `_colorbox_flag`, `_colorbox_flag_reason`, … | Agent flags; `_colorbox_prev_content` for undoing an edit. |
 
 ## Design decisions
@@ -95,6 +95,13 @@ docker compose up -d
 ```
 
 Open `http://127.0.0.1:8099/wp-admin` (login `admin`, password `demo-pass-123`). `docker compose down -v` removes it.
+
+### Tests
+
+`tools/demo/test-date.sh` runs the post date tests (`tools/demo/test-date.php`) on the demo site: it calls the
+tools the way the MCP server does, as an Editor account, and checks a backdated draft before and after publishing,
+refusal of future dates and bad formats, the log and undo in `update-published-post`. Exit code 0 = all passed.
+The site must be set up from a ZIP of the current code (steps above).
 
 ### Screenshots for these docs
 
@@ -145,10 +152,18 @@ To tell agents about something your site has (for example blocks of your theme),
 the text clients show the model before the tools:
 `add_filter( 'colorbox_mcp_instructions', fn( $text ) => $text . "\n\nThis site also has …" );`
 
-### Release ZIP
+### Release
 
-`bin/build-zip.sh` writes `dist/colorbox-wp-mcp-<version>.zip` with only what the site needs. Bump the version in
-both the header and `const VERSION` of `colorbox-wp-mcp.php`.
+Every change that will ship gets an entry in `CHANGELOG.md` and `CHANGELOG.pl.md` right away, under the next
+version ("not released yet"). At release time:
+
+1. Bump the version in both the header and `const VERSION` of `colorbox-wp-mcp.php`, and in the “Status”
+   paragraph of both READMEs.
+2. In both changelogs replace “not released yet” with the release date and point the version link at the bottom
+   to `releases/tag/v<version>`.
+3. `bin/build-zip.sh` writes `dist/colorbox-wp-mcp-<version>.zip` with only what the site needs (changelog
+   included).
+4. The GitHub release notes are the `CHANGELOG.md` entry for that version, plus one line on installing the ZIP.
 
 ---
 
