@@ -32,7 +32,10 @@ function image_for( \WP_Post $post ): array {
 	if ( ! $id ) {
 		return array();
 	}
-	$src = wp_get_attachment_image_src( $id, 'large' );
+	// Pełny plik, jeśli nie jest ogromny (obrazki do udostępnień mają 1200×630); większe → rozmiar „large”.
+	$meta = wp_get_attachment_metadata( $id );
+	$size = ( ! empty( $meta['width'] ) && (int) $meta['width'] <= 2000 && (int) ( $meta['height'] ?? 0 ) <= 2000 ) ? 'full' : 'large';
+	$src  = wp_get_attachment_image_src( $id, $size );
 	if ( ! $src ) {
 		return array();
 	}

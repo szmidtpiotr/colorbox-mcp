@@ -6,6 +6,13 @@ Every release gets an entry here before it is tagged, written for the person who
 changed for them, not which files moved. The same text goes into the GitHub release notes.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions: [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- **Share image size**: `og:image` now points to the full image file when it is at most 2000 px on each side
+  (a dedicated 1200×630 share image is used as is). Larger images still use the "large" size. Before, social
+  networks always got the 1024 px version.
+
 ## [0.5.0] — 2026-11-14
 
 ### Added

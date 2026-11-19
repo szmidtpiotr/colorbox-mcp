@@ -6,6 +6,13 @@ Każde wydanie dostaje tu wpis, zanim powstanie tag. Wpis jest pisany dla osoby,
 dla niej zmieniło, a nie które pliki się przesunęły. Ten sam tekst trafia do opisu wydania na GitHubie.
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numery wersji: [SemVer](https://semver.org/lang/pl/).
 
+## [Unreleased]
+
+### Zmienione
+- **Rozmiar obrazka do udostępnień**: `og:image` wskazuje pełny plik, jeśli ma najwyżej 2000 px w każdym
+  wymiarze (dedykowany obrazek 1200×630 idzie bez zmniejszania). Większe obrazki dalej w rozmiarze „large”.
+  Wcześniej sieci społecznościowe zawsze dostawały wersję 1024 px.
+
 ## [0.5.0] — 2026-11-14
 
 ### Dodane
